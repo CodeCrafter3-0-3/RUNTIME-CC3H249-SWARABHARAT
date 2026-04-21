@@ -1,0 +1,13 @@
+{
+  "name": "SwaraBharat",
+  "description": "Civic pulse demo app",
+  "repository": "https://github.com/<your-org>/<your-repo>",
+  "env": {
+    "OPENAI_API_KEY": {"description": "OpenAI API key", "required": false},
+    "AI_PROVIDER": {"description": "openai or huggingface", "value": "openai"}
+  },
+  "formation": {
+    "web": { "quantity": 1 }
+  },
+  "stack": "container"
+}
