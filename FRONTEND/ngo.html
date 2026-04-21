@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO Portal - SwaraBharat</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #667eea;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 32px;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-card h3 {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    .stat-card p {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    select, button {
+      padding: 10px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button {
+      background: #667eea;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    .help-requests {
+      display: grid;
+      gap: 16px;
+    }
+    .request-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+    .request-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+    }
+    .request-card.critical {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .request-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+    .request-id {
+      font-size: 12px;
+      color: #666;
+      font-family: monospace;
+    }
+    .urgency-badge {
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .urgency-high {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .urgency-medium {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .urgency-low {
+      background: #d1fae5;
+      color: #059669;
+    }
+    .request-content {
+      margin-bottom: 16px;
+    }
+    .request-content h3 {
+      color: #111;
+      margin-bottom: 8px;
+    }
+    .request-meta {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    .request-meta span {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+    }
+    .btn-accept {
+      background: #10b981;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-contact {
+      background: #3b82f6;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-map {
+      background: #8b5cf6;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+    .empty-state h2 {
+      margin-bottom: 12px;
+    }
+  </style>
+    <link rel="stylesheet" href="css/glassmorphism.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🤝 NGO Volunteer Portal</h1>
+    <p class="subtitle">Help citizens in need - Every action saves lives</p>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3 id="totalRequests">0</h3>
+        <p>Total Help Requests</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="criticalRequests">0</h3>
+        <p>Critical (Need Immediate Help)</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="helpedToday">0</h3>
+        <p>Helped Today</p>
+      </div>
+      <div class="stat-card">
+        <h3 id="volunteers">247</h3>
+        <p>Active Volunteers</p>
+      </div>
+    </div>
+
+    <div class="filters">
+      <select id="issueFilter">
+        <option value="ALL">All Issues</option>
+        <option value="Health">🏥 Health</option>
+        <option value="Food">🍽️ Food</option>
+        <option value="Water">💧 Water</option>
+        <option value="Safety">🛡️ Safety</option>
+        <option value="Education">📚 Education</option>
+        <option value="Employment">💼 Employment</option>
+      </select>
+      
+      <select id="urgencyFilter">
+        <option value="ALL">All Urgency</option>
+        <option value="High">🔴 High</option>
+        <option value="Medium">🟡 Medium</option>
+        <option value="Low">🟢 Low</option>
+      </select>
+      
+      <select id="statusFilter">
+        <option value="Submitted">📝 New Requests</option>
+        <option value="Acknowledged">👀 Acknowledged</option>
+        <option value="In Progress">⏳ In Progress</option>
+        <option value="ALL">All Status</option>
+      </select>
+      
+      <button onclick="loadRequests()">🔄 Refresh</button>
+      <button onclick="showMyHelps()">📋 My Helps</button>
+    </div>
+
+    <div class="help-requests" id="requestsList">
+      <div class="empty-state">
+        <h2>Loading help requests...</h2>
+        <p>Connecting to SwaraBharat network</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allRequests = [];
+    const API_BASE = 'https://backend-swarabharat.onrender.com';
+
+    async function loadRequests() {
+      try {
+        const res = await fetch(`${API_BASE}/reports`);
+        const data = await res.json();
+        allRequests = data.reports.filter(r => r.status !== 'Resolved');
+        
+        updateStats();
+        renderRequests();
+      } catch (e) {
+        console.error('Load error:', e);
+      }
+    }
+
+    function updateStats() {
+      document.getElementById('totalRequests').textContent = allRequests.length;
+      document.getElementById('criticalRequests').textContent = 
+        allRequests.filter(r => r.urgency === 'High').length;
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('helpedToday').textContent = 
+        allRequests.filter(r => r.status === 'In Progress' && r.time.startsWith(today)).length;
+    }
+
+    function renderRequests() {
+      let filtered = [...allRequests];
+      
+      const issueFilter = document.getElementById('issueFilter').value;
+      const urgencyFilter = document.getElementById('urgencyFilter').value;
+      const statusFilter = document.getElementById('statusFilter').value;
+      
+      if (issueFilter !== 'ALL') filtered = filtered.filter(r => r.issue === issueFilter);
+      if (urgencyFilter !== 'ALL') filtered = filtered.filter(r => r.urgency === urgencyFilter);
+      if (statusFilter !== 'ALL') filtered = filtered.filter(r => r.status === statusFilter);
+      
+      const container = document.getElementById('requestsList');
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <h2>✅ No requests matching filters</h2>
+            <p>Try changing filters or check back later</p>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = filtered.map(r => `
+        <div class="request-card ${r.urgency === 'High' ? 'critical' : ''}">
+          <div class="request-header">
+            <span class="request-id">${r.id || 'N/A'}</span>
+            <span class="urgency-badge urgency-${r.urgency.toLowerCase()}">${r.urgency} Priority</span>
+          </div>
+          
+          <div class="request-content">
+            <h3>${getIssueIcon(r.issue)} ${r.issue} Issue</h3>
+            <p>${r.message || r.summary}</p>
+          </div>
+          
+          <div class="request-meta">
+            <span>⏰ ${formatTime(r.time)}</span>
+            <span>😊 ${r.emotion}</span>
+            ${r.emergency ? `<span>📞 ${r.emergency}</span>` : ''}
+            ${r.location ? `<span>📍 Location Available</span>` : ''}
+          </div>
+          
+          <div class="action-buttons">
+            <button class="btn-accept" onclick="acceptHelp('${r.id}')">
+              ✋ I'll Help
+            </button>
+            ${r.emergency ? `<button class="btn-contact" onclick="callEmergency('${r.emergency}')">📞 Call</button>` : ''}
+            ${r.location ? `<button class="btn-map" onclick="openLocation(${r.location.latitude}, ${r.location.longitude})">🗺️ Navigate</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function getIssueIcon(issue) {
+      const icons = {
+        'Health': '🏥',
+        'Food': '🍽️',
+        'Water': '💧',
+        'Safety': '🛡️',
+        'Education': '📚',
+        'Employment': '💼',
+        'Accident': '🚨'
+      };
+      return icons[issue] || '📋';
+    }
+
+    function formatTime(time) {
+      const date = new Date(time);
+      const now = new Date();
+      const diff = Math.floor((now - date) / 1000 / 60);
+      
+      if (diff < 60) return `${diff} min ago`;
+      if (diff < 1440) return `${Math.floor(diff / 60)} hrs ago`;
+      return date.toLocaleDateString();
+    }
+
+    async function acceptHelp(reportId) {
+      if (confirm('Are you sure you want to help with this request?')) {
+        try {
+          await fetch(`${API_BASE}/update_status/${reportId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'In Progress' })
+          });
+          
+          alert('✅ Thank you! The citizen will be notified that help is on the way.');
+          loadRequests();
+        } catch (e) {
+          alert('❌ Error: ' + e.message);
+        }
+      }
+    }
+
+    function callEmergency(number) {
+      window.location.href = `tel:${number}`;
+    }
+
+    function openLocation(lat, lng) {
+      window.open(`https://www.google.com/maps?q=${lat},${lng}`, '_blank');
+    }
+
+    function showMyHelps() {
+      alert('Feature coming soon: Track all your volunteer activities');
+    }
+
+    // Event listeners
+    document.getElementById('issueFilter').addEventListener('change', renderRequests);
+    document.getElementById('urgencyFilter').addEventListener('change', renderRequests);
+    document.getElementById('statusFilter').addEventListener('change', renderRequests);
+
+    // Initial load
+    loadRequests();
+    setInterval(loadRequests, 15000); // Refresh every 15 seconds
+  </script>
+</body>
+</html>

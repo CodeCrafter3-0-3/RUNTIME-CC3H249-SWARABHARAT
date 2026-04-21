@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwaraBharat Runtime API Config</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #020617;
+      --panel: rgba(15, 23, 42, 0.7);
+      --line: rgba(148, 163, 184, 0.28);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #6366f1;
+      --success: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(99, 102, 241, 0.2), transparent 35%),
+        radial-gradient(circle at 88% 90%, rgba(6, 182, 212, 0.16), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, sans-serif;
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      padding: 22px;
+      box-shadow: 0 18px 45px rgba(2, 6, 23, 0.58);
+    }
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin-bottom: 18px;
+      line-height: 1.6;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    label {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(2, 6, 23, 0.8);
+      color: var(--text);
+      padding: 11px 12px;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+      margin-bottom: 14px;
+    }
+
+    button,
+    .link-btn {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 9px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      color: #e2e8f0;
+      background: rgba(30, 41, 59, 0.75);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .primary {
+      background: linear-gradient(90deg, #4f46e5, #0891b2);
+      border-color: rgba(99, 102, 241, 0.55);
+    }
+
+    .danger {
+      background: rgba(127, 29, 29, 0.5);
+      border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    #status {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: #bfdbfe;
+      background: rgba(2, 6, 23, 0.6);
+      min-height: 42px;
+    }
+
+    .ok {
+      color: #bbf7d0;
+      border-color: rgba(34, 197, 94, 0.45);
+      background: rgba(6, 78, 59, 0.28);
+    }
+
+    .err {
+      color: #fecaca;
+      border-color: rgba(239, 68, 68, 0.45);
+      background: rgba(127, 29, 29, 0.28);
+    }
+
+    .list {
+      margin-top: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 0.86rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    code {
+      color: #93c5fd;
+      background: rgba(2, 6, 23, 0.65);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Runtime API Configuration</h1>
+    <p class="sub">Use this page to set a custom submit API endpoint at runtime. This updates browser storage and works immediately in the citizen submission page.</p>
+
+    <div class="field">
+      <label for="submitEndpoint">Submit Endpoint URL</label>
+      <input id="submitEndpoint" type="url" placeholder="https://your-backend.com/submit">
+    </div>
+
+    <div class="hint">If empty, default fallback order is used: production endpoint, same-origin <code>/submit</code>, then localhost.</div>
+
+    <div class="actions">
+      <button class="primary" id="saveBtn" type="button">Save Endpoint</button>
+      <button id="testBtn" type="button">Test Health</button>
+      <button class="danger" id="clearBtn" type="button">Clear Custom Endpoint</button>
+      <a class="link-btn" href="index1.html">Back to Citizen Form</a>
+    </div>
+
+    <div id="status">Ready.</div>
+
+    <div class="list" id="endpointOrder"></div>
+  </div>
+
+  <script>
+    const input = document.getElementById('submitEndpoint');
+    const status = document.getElementById('status');
+    const endpointOrder = document.getElementById('endpointOrder');
+
+    function setStatus(message, type) {
+      status.textContent = message;
+      status.className = '';
+      if (type === 'ok') status.classList.add('ok');
+      if (type === 'err') status.classList.add('err');
+    }
+
+    function currentEndpointOrder() {
+      const custom = localStorage.getItem('SWARA_API_SUBMIT');
+      const list = [];
+      if (custom) list.push(custom);
+      list.push('https://backend-swarabharat.onrender.com/submit');
+      if (window.location.protocol !== 'file:') {
+        list.push(window.location.origin + '/submit');
+      }
+      list.push('http://localhost:5000/submit');
+      return [...new Set(list)];
+    }
+
+    function renderEndpointOrder() {
+      const order = currentEndpointOrder();
+      endpointOrder.innerHTML = '<strong>Active Submit Endpoint Order:</strong><br>' + order.map((v, i) => `${i + 1}. <code>${v}</code>`).join('<br>');
+    }
+
+    function loadCurrent() {
+      input.value = localStorage.getItem('SWARA_API_SUBMIT') || '';
+      renderEndpointOrder();
+    }
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      const value = input.value.trim();
+      if (!value) {
+        setStatus('Please enter a valid endpoint URL or click clear.', 'err');
+        return;
+      }
+      try {
+        const url = new URL(value);
+        if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+          throw new Error('Only http/https protocol is allowed');
+        }
+        localStorage.setItem('SWARA_API_SUBMIT', value);
+        setStatus('Custom endpoint saved.', 'ok');
+        renderEndpointOrder();
+      } catch (e) {
+        setStatus('Invalid URL: ' + e.message, 'err');
+      }
+    });
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      localStorage.removeItem('SWARA_API_SUBMIT');
+      input.value = '';
+      setStatus('Custom endpoint cleared.', 'ok');
+      renderEndpointOrder();
+    });
+
+    document.getElementById('testBtn').addEventListener('click', async () => {
+      const url = (input.value.trim() || localStorage.getItem('SWARA_API_SUBMIT') || '').trim();
+      if (!url) {
+        setStatus('No custom endpoint set. Save one first, or use defaults in citizen page.', 'err');
+        return;
+      }
+
+      try {
+        const healthUrl = url.replace(/\/submit\/?$/i, '/health');
+        const response = await fetch(healthUrl, { method: 'GET' });
+        if (!response.ok) {
+          setStatus(`Health check failed: HTTP ${response.status}`, 'err');
+          return;
+        }
+        setStatus('Health check successful for: ' + healthUrl, 'ok');
+      } catch (e) {
+        setStatus('Health check error: ' + e.message, 'err');
+      }
+    });
+
+    loadCurrent();
+  </script>
+</body>
+</html>

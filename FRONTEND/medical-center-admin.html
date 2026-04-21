@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwaraBharat | Medical Center Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg: #050b1c;
+      --bg-panel: rgba(10, 20, 45, 0.78);
+      --bg-soft: rgba(13, 30, 63, 0.58);
+      --text: #eaf2ff;
+      --muted: #a3b3ce;
+      --line: rgba(148, 163, 184, 0.24);
+      --primary: #1d9bf0;
+      --success: #16a34a;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --radius: 16px;
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--text);
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(29, 155, 240, 0.25), transparent 30%),
+        radial-gradient(circle at 88% 14%, rgba(239, 68, 68, 0.18), transparent 30%),
+        radial-gradient(circle at 72% 85%, rgba(22, 163, 74, 0.2), transparent 35%),
+        var(--bg);
+      padding: 24px;
+    }
+
+    .shell {
+      max-width: 1450px;
+      margin: 0 auto;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: linear-gradient(145deg, rgba(7, 18, 40, 0.82), rgba(4, 10, 25, 0.9));
+      box-shadow: 0 30px 70px rgba(2, 8, 23, 0.65);
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(2, 8, 23, 0.55);
+      backdrop-filter: blur(8px);
+    }
+
+    .brand h1 {
+      font-family: var(--font-head);
+      font-size: 1.5rem;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+
+    .brand p {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 0.84rem;
+      color: #dbeafe;
+      background: rgba(15, 23, 42, 0.66);
+    }
+
+    .btn {
+      border: 1px solid transparent;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      padding: 10px 14px;
+      color: #fff;
+      background: linear-gradient(135deg, #0284c7, #1d4ed8);
+      box-shadow: 0 8px 18px rgba(2, 132, 199, 0.35);
+    }
+
+    .btn-outline {
+      padding: 10px 14px;
+      color: #dbeafe;
+      border-color: var(--line);
+      background: rgba(7, 18, 40, 0.8);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 18px;
+      padding: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--bg-panel);
+      backdrop-filter: blur(10px);
+    }
+
+    .main-panel {
+      padding: 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .stat {
+      background: var(--bg-soft);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.78rem;
+      letter-spacing: 0.3px;
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1fr 170px 170px auto;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .field {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(2, 8, 23, 0.7);
+      color: #dbeafe;
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .field:focus {
+      border-color: rgba(56, 189, 248, 0.85);
+      box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.22);
+    }
+
+    #caseList {
+      display: grid;
+      gap: 10px;
+      max-height: 66vh;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .case-card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(2, 8, 23, 0.66);
+    }
+
+    .case-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      align-items: flex-start;
+    }
+
+    .case-id {
+      font-size: 0.8rem;
+      color: #93c5fd;
+      font-family: Consolas, monospace;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .badge.high { background: rgba(239, 68, 68, 0.18); color: #fecaca; }
+    .badge.medium { background: rgba(245, 158, 11, 0.18); color: #fde68a; }
+    .badge.low { background: rgba(34, 197, 94, 0.18); color: #bbf7d0; }
+
+    .case-title {
+      margin-bottom: 6px;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .case-msg {
+      color: #ced8ee;
+      line-height: 1.45;
+      font-size: 0.92rem;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.81rem;
+      margin-bottom: 10px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn-sm {
+      padding: 7px 10px;
+      font-size: 0.78rem;
+      border-radius: 8px;
+      border: none;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .dispatch { background: #0ea5e9; }
+    .stabilize { background: #16a34a; }
+    .call { background: #f97316; }
+    .map { background: #8b5cf6; }
+
+    .side-panel {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .side-title {
+      font-family: var(--font-head);
+      font-size: 1.05rem;
+      margin-bottom: 8px;
+    }
+
+    .resource-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .resource-row label {
+      display: block;
+      font-size: 0.82rem;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+
+    .resource-row input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 10px;
+      background: rgba(2, 8, 23, 0.72);
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    .meter {
+      margin-top: 6px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.25);
+      overflow: hidden;
+    }
+
+    .meter > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, #38bdf8, #22c55e);
+      width: 0;
+      transition: width 0.25s ease;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.81rem;
+      line-height: 1.4;
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--line);
+      border-radius: 12px;
+      padding: 28px;
+      background: rgba(2, 8, 23, 0.45);
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: rgba(3, 105, 161, 0.95);
+      color: #fff;
+      border: 1px solid rgba(125, 211, 252, 0.4);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 0.88rem;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: all 0.25s ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .content { grid-template-columns: 1fr; }
+      .side-panel { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 780px) {
+      body { padding: 10px; }
+      .topbar { padding: 16px; }
+      .brand h1 { font-size: 1.2rem; }
+      .content { padding: 12px; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters { grid-template-columns: 1fr; }
+      .side-panel { grid-template-columns: 1fr; }
+      #caseList { max-height: none; }
+    }
+  </style>
+  <link rel="stylesheet" href="css/glassmorphism.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <h1><i class="fas fa-notes-medical"></i> Medical Center Admin Panel</h1>
+        <p>Real-time triage for health incidents across the SwaraBharat network.</p>
+      </div>
+      <div class="top-actions">
+        <span id="syncStatus" class="pill">Syncing data...</span>
+        <button id="refreshBtn" class="btn btn-primary" type="button"><i class="fas fa-rotate"></i> Refresh</button>
+        <a class="btn btn-outline" href="join.html"><i class="fas fa-arrow-left"></i> Access Portal</a>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="panel main-panel">
+        <div class="stats">
+          <article class="stat">
+            <div class="stat-label">Medical Cases Open</div>
+            <div id="totalCases" class="stat-value">0</div>
+          </article>
+          <article class="stat">
+            <div class="stat-label">Critical Right Now</div>
+            <div id="criticalCases" class="stat-value">0</div>
+          </article>
+          <article class="stat">
+            <div class="stat-label">Ambulance Needed</div>
+            <div id="ambulanceCases" class="stat-value">0</div>
+          </article>
+          <article class="stat">
+            <div class="stat-label">Stabilized Today</div>
+            <div id="stabilizedToday" class="stat-value">0</div>
+          </article>
+        </div>
+
+        <div class="filters">
+          <input id="searchInput" class="field" type="text" placeholder="Search by symptom, location, or report text">
+          <select id="urgencyFilter" class="field">
+            <option value="ALL">All Urgency</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <select id="statusFilter" class="field">
+            <option value="ALL">All Status</option>
+            <option value="Submitted">Submitted</option>
+            <option value="Acknowledged">Acknowledged</option>
+            <option value="In Progress">In Progress</option>
+          </select>
+          <button id="resetBtn" type="button" class="btn btn-outline">Reset Filters</button>
+        </div>
+
+        <div id="caseList">
+          <div class="empty">Loading medical incidents...</div>
+        </div>
+      </section>
+
+      <aside class="panel side-panel">
+        <section>
+          <h2 class="side-title">Resource Capacity</h2>
+          <div class="resource-grid">
+            <div class="resource-row">
+              <label for="icuBeds">ICU Beds Available</label>
+              <input id="icuBeds" type="number" min="0" value="12">
+            </div>
+            <div class="resource-row">
+              <label for="wardBeds">General Beds Available</label>
+              <input id="wardBeds" type="number" min="0" value="45">
+            </div>
+            <div class="resource-row">
+              <label for="ambulances">Ambulances Ready</label>
+              <input id="ambulances" type="number" min="0" value="8">
+            </div>
+            <div class="resource-row">
+              <label for="traumaTeams">Trauma Teams On Shift</label>
+              <input id="traumaTeams" type="number" min="0" value="6">
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="side-title">Load Meter</h2>
+          <div style="font-size:0.84rem; color:var(--muted);">Critical-case pressure vs available emergency units</div>
+          <div class="meter"><span id="loadBar"></span></div>
+          <div id="loadText" style="margin-top:8px; font-size:0.82rem; color:#cbd5e1;">Load: 0%</div>
+        </section>
+
+        <section class="hint">
+          Triage actions update citizen case status immediately. Use Dispatch for active response and Stabilize after care completion.
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const API_BASE = 'https://backend-swarabharat.onrender.com';
+    const CAPACITY_KEY = 'swarabharat-medical-capacity-v1';
+
+    let allReports = [];
+    let medicalCases = [];
+
+    const issueIcons = {
+      Health: 'fa-notes-medical',
+      Accident: 'fa-truck-medical',
+      Safety: 'fa-shield-heart'
+    };
+
+    function escapeHtml(str) {
+      return (str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/\"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function urgencyWeight(urgency) {
+      if (urgency === 'High') return 3;
+      if (urgency === 'Medium') return 2;
+      if (urgency === 'Low') return 1;
+      return 0;
+    }
+
+    function parseTime(value) {
+      const d = new Date(value || Date.now());
+      return Number.isNaN(d.getTime()) ? new Date() : d;
+    }
+
+    function formatTime(value) {
+      const date = parseTime(value);
+      const now = new Date();
+      const mins = Math.floor((now - date) / 60000);
+
+      if (mins < 1) return 'just now';
+      if (mins < 60) return mins + ' min ago';
+      if (mins < 1440) return Math.floor(mins / 60) + ' hr ago';
+      return date.toLocaleDateString();
+    }
+
+    function normalizeText(report) {
+      return ((report.message || '') + ' ' + (report.summary || '') + ' ' + (report.issue || '')).toLowerCase();
+    }
+
+    function isMedicalCase(report) {
+      const issue = (report.issue || '').toLowerCase();
+      const text = normalizeText(report);
+      const markers = ['medical', 'health', 'hospital', 'injury', 'bleeding', 'fever', 'oxygen', 'icu', 'ambulance', 'accident', 'burn', 'fracture'];
+      return issue === 'health' || issue === 'accident' || markers.some((marker) => text.includes(marker));
+    }
+
+    function needsAmbulance(report) {
+      const text = normalizeText(report);
+      return text.includes('ambulance') || text.includes('unconscious') || report.issue === 'Accident';
+    }
+
+    function getLocationLabel(report) {
+      if (report.location && typeof report.location === 'object') {
+        const { latitude, longitude } = report.location;
+        if (typeof latitude === 'number' && typeof longitude === 'number') {
+          return latitude.toFixed(4) + ', ' + longitude.toFixed(4);
+        }
+      }
+      if (typeof report.location === 'string' && report.location.trim()) {
+        return report.location.trim();
+      }
+      return 'Not provided';
+    }
+
+    function updateStats() {
+      document.getElementById('totalCases').textContent = medicalCases.length;
+      document.getElementById('criticalCases').textContent = medicalCases.filter((r) => r.urgency === 'High').length;
+      document.getElementById('ambulanceCases').textContent = medicalCases.filter(needsAmbulance).length;
+
+      const today = new Date().toISOString().split('T')[0];
+      const stabilized = allReports.filter((report) => {
+        return isMedicalCase(report) && report.status === 'Resolved' && String(report.time || '').startsWith(today);
+      }).length;
+      document.getElementById('stabilizedToday').textContent = stabilized;
+    }
+
+    function getFilteredCases() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const urgency = document.getElementById('urgencyFilter').value;
+      const status = document.getElementById('statusFilter').value;
+
+      return medicalCases.filter((report) => {
+        const text = normalizeText(report) + ' ' + String(report.id || '') + ' ' + getLocationLabel(report).toLowerCase();
+
+        const matchQuery = !query || text.includes(query);
+        const matchUrgency = urgency === 'ALL' || report.urgency === urgency;
+        const matchStatus = status === 'ALL' || report.status === status;
+
+        return matchQuery && matchUrgency && matchStatus;
+      });
+    }
+
+    function renderCases() {
+      const list = document.getElementById('caseList');
+      const filtered = getFilteredCases();
+
+      if (!filtered.length) {
+        list.innerHTML = '<div class="empty">No matching medical cases for the current filters.</div>';
+        return;
+      }
+
+      list.innerHTML = filtered.map((report) => {
+        const urgency = (report.urgency || 'Low').toLowerCase();
+        const issue = escapeHtml(report.issue || 'General');
+        const msg = escapeHtml(report.message || report.summary || 'No details available');
+        const icon = issueIcons[report.issue] || 'fa-stethoscope';
+        const id = escapeHtml(String(report.id || 'N/A'));
+        const locationLabel = escapeHtml(getLocationLabel(report));
+        const emotion = escapeHtml(report.emotion || 'Unknown');
+        const timeText = escapeHtml(formatTime(report.time));
+        const emergency = escapeHtml(report.emergency || 'Not provided');
+        const status = escapeHtml(report.status || 'Submitted');
+
+        let mapAction = '';
+        if (report.location && typeof report.location === 'object' && typeof report.location.latitude === 'number' && typeof report.location.longitude === 'number') {
+          mapAction = '<button class="btn-sm map" onclick="openMap(' + report.location.latitude + ',' + report.location.longitude + ')"><i class="fas fa-location-dot"></i> Map</button>';
+        }
+
+        let callAction = '';
+        if (report.emergency) {
+          callAction = '<button class="btn-sm call" onclick="callEmergency(\'' + emergency + '\')"><i class="fas fa-phone"></i> Call</button>';
+        }
+
+        return '<article class="case-card">'
+          + '<div class="case-head">'
+          + '<div>'
+          + '<div class="case-id">Case ' + id + '</div>'
+          + '<h3 class="case-title"><i class="fas ' + icon + '"></i> ' + issue + ' Incident</h3>'
+          + '</div>'
+          + '<span class="badge ' + urgency + '">' + escapeHtml(report.urgency || 'Low') + '</span>'
+          + '</div>'
+          + '<div class="case-msg">' + msg + '</div>'
+          + '<div class="meta">'
+          + '<span><i class="fas fa-clock"></i> ' + timeText + '</span>'
+          + '<span><i class="fas fa-heart-pulse"></i> ' + emotion + '</span>'
+          + '<span><i class="fas fa-circle-info"></i> ' + status + '</span>'
+          + '<span><i class="fas fa-location-crosshairs"></i> ' + locationLabel + '</span>'
+          + '<span><i class="fas fa-phone-volume"></i> ' + emergency + '</span>'
+          + '</div>'
+          + '<div class="actions">'
+          + '<button class="btn-sm dispatch" onclick="updateCaseStatus(\'' + id + '\', \'In Progress\', \'Ambulance/medical team dispatched\')"><i class="fas fa-truck-medical"></i> Dispatch</button>'
+          + '<button class="btn-sm stabilize" onclick="updateCaseStatus(\'' + id + '\', \'Resolved\', \'Case marked stabilized\')"><i class="fas fa-check"></i> Stabilize</button>'
+          + callAction
+          + mapAction
+          + '</div>'
+          + '</article>';
+      }).join('');
+    }
+
+    function showToast(message, isError) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.style.background = isError ? 'rgba(153, 27, 27, 0.95)' : 'rgba(3, 105, 161, 0.95)';
+      toast.classList.add('show');
+      window.clearTimeout(showToast._timer);
+      showToast._timer = window.setTimeout(function () {
+        toast.classList.remove('show');
+      }, 2600);
+    }
+
+    function updateSyncLabel(text, isError) {
+      const syncLabel = document.getElementById('syncStatus');
+      syncLabel.textContent = text;
+      syncLabel.style.borderColor = isError ? 'rgba(239,68,68,0.45)' : 'rgba(148,163,184,0.24)';
+      syncLabel.style.color = isError ? '#fecaca' : '#dbeafe';
+    }
+
+    async function updateCaseStatus(caseId, status, successMsg) {
+      if (!caseId || caseId === 'N/A') {
+        showToast('Case ID missing, cannot update status.', true);
+        return;
+      }
+
+      try {
+        const response = await fetch(API_BASE + '/update_status/' + encodeURIComponent(caseId), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: status })
+        });
+
+        if (!response.ok) {
+          throw new Error('Status update failed');
+        }
+
+        showToast(successMsg, false);
+        await loadCases();
+      } catch (error) {
+        showToast('Unable to update case status right now.', true);
+      }
+    }
+
+    async function loadCases() {
+      updateSyncLabel('Syncing data...', false);
+
+      try {
+        const response = await fetch(API_BASE + '/reports', { cache: 'no-store' });
+        if (!response.ok) {
+          throw new Error('Reports API unavailable');
+        }
+
+        const data = await response.json();
+        allReports = Array.isArray(data.reports) ? data.reports : [];
+
+        medicalCases = allReports
+          .filter((report) => report.status !== 'Resolved' && isMedicalCase(report))
+          .sort((a, b) => {
+            const score = urgencyWeight(b.urgency) - urgencyWeight(a.urgency);
+            if (score !== 0) return score;
+            return parseTime(b.time) - parseTime(a.time);
+          });
+
+        updateStats();
+        renderCases();
+        updateLoadMeter();
+
+        const now = new Date();
+        updateSyncLabel('Live sync ' + now.toLocaleTimeString(), false);
+      } catch (error) {
+        updateSyncLabel('API unreachable', true);
+        document.getElementById('caseList').innerHTML = '<div class="empty">Could not load medical cases. Please refresh in a moment.</div>';
+      }
+    }
+
+    function openMap(lat, lng) {
+      window.open('https://www.google.com/maps?q=' + lat + ',' + lng, '_blank', 'noopener');
+    }
+
+    function callEmergency(number) {
+      const safeNumber = String(number || '').replace(/[^0-9+]/g, '');
+      if (!safeNumber) {
+        showToast('Emergency number not valid.', true);
+        return;
+      }
+      window.location.href = 'tel:' + safeNumber;
+    }
+
+    function readCapacity() {
+      return {
+        icuBeds: Number(document.getElementById('icuBeds').value) || 0,
+        wardBeds: Number(document.getElementById('wardBeds').value) || 0,
+        ambulances: Number(document.getElementById('ambulances').value) || 0,
+        traumaTeams: Number(document.getElementById('traumaTeams').value) || 0
+      };
+    }
+
+    function saveCapacity() {
+      const capacity = readCapacity();
+      localStorage.setItem(CAPACITY_KEY, JSON.stringify(capacity));
+      updateLoadMeter();
+    }
+
+    function loadCapacity() {
+      try {
+        const raw = localStorage.getItem(CAPACITY_KEY);
+        if (!raw) return;
+        const capacity = JSON.parse(raw);
+
+        if (typeof capacity.icuBeds === 'number') document.getElementById('icuBeds').value = capacity.icuBeds;
+        if (typeof capacity.wardBeds === 'number') document.getElementById('wardBeds').value = capacity.wardBeds;
+        if (typeof capacity.ambulances === 'number') document.getElementById('ambulances').value = capacity.ambulances;
+        if (typeof capacity.traumaTeams === 'number') document.getElementById('traumaTeams').value = capacity.traumaTeams;
+      } catch (error) {
+        // Ignore invalid stored values
+      }
+    }
+
+    function updateLoadMeter() {
+      const capacity = readCapacity();
+      const emergencyUnits = capacity.ambulances + capacity.traumaTeams + capacity.icuBeds;
+      const pressure = medicalCases.filter((caseItem) => caseItem.urgency === 'High').length;
+
+      const ratio = emergencyUnits > 0 ? Math.min(100, Math.round((pressure / emergencyUnits) * 100)) : 100;
+      document.getElementById('loadBar').style.width = ratio + '%';
+      document.getElementById('loadText').textContent = 'Load: ' + ratio + '% (' + pressure + ' critical / ' + emergencyUnits + ' emergency units)';
+    }
+
+    function setupListeners() {
+      document.getElementById('refreshBtn').addEventListener('click', loadCases);
+      document.getElementById('searchInput').addEventListener('input', renderCases);
+      document.getElementById('urgencyFilter').addEventListener('change', renderCases);
+      document.getElementById('statusFilter').addEventListener('change', renderCases);
+
+      document.getElementById('resetBtn').addEventListener('click', function () {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('urgencyFilter').value = 'ALL';
+        document.getElementById('statusFilter').value = 'ALL';
+        renderCases();
+      });
+
+      ['icuBeds', 'wardBeds', 'ambulances', 'traumaTeams'].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', saveCapacity);
+      });
+    }
+
+    window.updateCaseStatus = updateCaseStatus;
+    window.openMap = openMap;
+    window.callEmergency = callEmergency;
+
+    loadCapacity();
+    setupListeners();
+    loadCases();
+    setInterval(loadCases, 20000);
+  </script>
+</body>
+</html>

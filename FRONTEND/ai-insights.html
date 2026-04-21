@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Insights - SwaraBharat</title>
+  <link rel="stylesheet" href="css/glassmorphism.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    h1 {
+      color: #6366f1;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 32px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .card h2 {
+      color: #fff;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .prediction-item {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .prediction-item strong {
+      color: #6366f1;
+    }
+    .anomaly-item {
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 4px solid #ef4444;
+    }
+    .pattern-item {
+      background: #1e293b;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      border-left: 4px solid #10b981;
+    }
+    .recommendation-item {
+      background: #1e293b;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+    .badge-high {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+    .badge-medium {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .badge-low {
+      background: #d1fae5;
+      color: #059669;
+    }
+    .chart-container {
+      height: 300px;
+      margin-top: 16px;
+    }
+    button {
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background: #5568d3;
+    }
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🤖 AI Insights Dashboard</h1>
+    <p class="subtitle">Powered by Advanced Machine Learning & Predictive Analytics</p>
+    
+    <button onclick="loadAllInsights()">🔄 Refresh AI Insights</button>
+    
+    <div class="grid">
+      <!-- Predictions -->
+      <div class="card">
+        <h2>📈 24-Hour Predictions</h2>
+        <div id="predictionsBox" class="loading">Loading predictions...</div>
+        <div class="chart-container">
+          <canvas id="predictionsChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Anomalies -->
+      <div class="card">
+        <h2>🚨 Anomaly Detection</h2>
+        <div id="anomaliesBox" class="loading">Scanning for anomalies...</div>
+      </div>
+      
+      <!-- Recurring Patterns -->
+      <div class="card">
+        <h2>🔁 Recurring Patterns</h2>
+        <div id="patternsBox" class="loading">Analyzing patterns...</div>
+      </div>
+      
+      <!-- Resource Optimization -->
+      <div class="card">
+        <h2>⚡ Resource Optimization</h2>
+        <div id="optimizationBox" class="loading">Optimizing resources...</div>
+      </div>
+      
+      <!-- Sentiment Analysis -->
+      <div class="card">
+        <h2>😊 Sentiment Trends</h2>
+        <div class="chart-container">
+          <canvas id="sentimentChart"></canvas>
+        </div>
+      </div>
+      
+      <!-- Top Recommendations -->
+      <div class="card">
+        <h2>💡 AI Recommendations</h2>
+        <div id="recommendationsBox" class="loading">Generating recommendations...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'https://backend-swarabharat.onrender.com';
+    let predictionsChart = null;
+    let sentimentChart = null;
+
+    async function loadAllInsights() {
+      loadPredictions();
+      loadAnomalies();
+      loadPatterns();
+      loadOptimization();
+      loadSentiment();
+      loadRecommendations();
+    }
+
+    async function loadPredictions() {
+      try {
+        const res = await fetch(`${API_BASE}/ai/predictions`);
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          const predictions = data.predictions.predictions || [];
+          const box = document.getElementById('predictionsBox');
+          
+          if (predictions.length === 0) {
+            box.innerHTML = '<p style="color:#94a3b8;">Not enough data for predictions yet.</p>';
+            return;
+          }
+          
+          box.innerHTML = `
+            <div class="prediction-item">
+              <strong>Total Expected:</strong> ${data.predictions.total_expected} reports
+            </div>
+            <div class="prediction-item">
+              <strong>Confidence:</strong> ${data.predictions.confidence}%
+            </div>
+            <div class="prediction-item">
+              <strong>Peak Hours:</strong> ${predictions.slice(0, 3).map(p => `${p.hour}:00 (${p.expected_count} reports)`).join(', ')}
+            </div>
+          `;
+          
+          // Chart
+          const ctx = document.getElementById('predictionsChart');
+          if (predictionsChart) predictionsChart.destroy();
+          
+          predictionsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: predictions.map(p => `${p.hour}:00`),
+              datasets: [{
+                label: 'Expected Reports',
+                data: predictions.map(p => p.expected_count),
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                tension: 0.4
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { labels: { color: '#e5e7eb' } }
+              },
+              scales: {
+                y: { ticks: { color: '#94a3b8' } },
+                x: { ticks: { color: '#94a3b8' } }
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Predictions error:', e);
+      }
+    }
+
+    async function loadAnomalies() {
+      try {
+        const res = await fetch(`${API_BASE}/ai/anomalies`);
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          const anomalies = data.anomalies || [];
+          const box = document.getElementById('anomaliesBox');
+          
+          if (anomalies.length === 0) {
+            box.innerHTML = '<p style="color:#22c55e;">✅ No anomalies detected. System healthy!</p>';
+            return;
+          }
+          
+          box.innerHTML = anomalies.map(a => `
+            <div class="anomaly-item">
+              <strong>${a.type.replace(/_/g, ' ').toUpperCase()}</strong>
+              <span class="badge badge-${a.severity.toLowerCase()}">${a.severity}</span>
+              <p style="margin-top:8px;font-size:14px;">
+                ${a.issue ? `Issue: ${a.issue}, ` : ''}
+                ${a.count ? `Count: ${a.count}` : ''}
+                ${a.message ? a.message : ''}
+              </p>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Anomalies error:', e);
+      }
+    }
+
+    async function loadPatterns() {
+      try {
+        const res = await fetch(`${API_BASE}/ai/patterns`);
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          const patterns = data.patterns || [];
+          const box = document.getElementById('patternsBox');
+          
+          if (patterns.length === 0) {
+            box.innerHTML = '<p style="color:#94a3b8;">No recurring patterns detected yet.</p>';
+            return;
+          }
+          
+          box.innerHTML = patterns.map(p => `
+            <div class="pattern-item">
+              <strong>${p.issue}</strong> at ${p.location}
+              <p style="margin-top:8px;font-size:14px;color:#94a3b8;">
+                ${p.frequency} | ${p.occurrences} occurrences
+              </p>
+              <p style="margin-top:4px;font-size:13px;color:#10b981;">
+                💡 ${p.recommendation}
+              </p>
+            </div>
+          `).join('');
+        }
+      } catch (e) {
+        console.error('Patterns error:', e);
+      }
+    }
+
+    async function loadOptimization() {
+      try {
+        const res = await fetch(`${API_BASE}/analytics/insights`);
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          const insights = data.insights;
+          const box = document.getElementById('optimizationBox');
+          
+          box.innerHTML = `
+            <div class="prediction-item">
+              <strong>Total Reports:</strong> ${insights.total_reports}
+            </div>
+            <div class="prediction-item">
+              <strong>Location Coverage:</strong> ${insights.location_coverage}%
+            </div>
+            <div class="prediction-item">
+              <strong>Emergency Contacts:</strong> ${insights.emergency_contacts}
+            </div>
+            <div class="prediction-item">
+              <strong>Top Issue:</strong> ${insights.top_issue}
+            </div>
+            <div class="prediction-item" style="background:#10b981;color:white;">
+              <strong>💡 Recommendation:</strong> Focus resources on ${insights.top_issue} department
+            </div>
+          `;
+        }
+      } catch (e) {
+        console.error('Optimization error:', e);
+      }
+    }
+
+    async function loadSentiment() {
+      try {
+        const res = await fetch(`${API_BASE}/reports`);
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          const reports = data.reports || [];
+          const emotions = {};
+          
+          reports.forEach(r => {
+            const emotion = r.emotion || 'Unknown';
+            emotions[emotion] = (emotions[emotion] || 0) + 1;
+          });
+          
+          const ctx = document.getElementById('sentimentChart');
+          if (sentimentChart) sentimentChart.destroy();
+          
+          sentimentChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+              labels: Object.keys(emotions),
+              datasets: [{
+                data: Object.values(emotions),
+                backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { color: '#e5e7eb' } }
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Sentiment error:', e);
+      }
+    }
+
+    async function loadRecommendations() {
+      const box = document.getElementById('recommendationsBox');
+      box.innerHTML = `
+        <div class="recommendation-item">🚨 Prioritize Health emergencies (< 30 min response)</div>
+        <div class="recommendation-item">💧 Deploy water tankers to high-demand areas</div>
+        <div class="recommendation-item">🍽️ Coordinate with food NGOs for hunger relief</div>
+        <div class="recommendation-item">📚 Address recurring education issues</div>
+        <div class="recommendation-item">⚡ Optimize volunteer allocation based on urgency</div>
+      `;
+    }
+
+    // Initial load
+    loadAllInsights();
+    
+    // Auto-refresh every 30 seconds
+    setInterval(loadAllInsights, 30000);
+  </script>
+</body>
+</html>

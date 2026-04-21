@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwaraBharat | Hyper-Grid Architecture</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/glassmorphism.css">
+
+    <style>
+        :root {
+            /* --- The Palette of the Future --- */
+            --bg-void: #020617;
+            --bg-panel: rgba(30, 41, 59, 0.4);
+            --bg-panel-hover: rgba(51, 65, 85, 0.6);
+
+            --primary: #6366f1;
+            /* Indigo Neon */
+            --cyan: #06b6d4;
+            /* Cyan Neon */
+            --purple: #a855f7;
+
+            --gradient-main: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+            --gradient-text: linear-gradient(to right, #c084fc, #6366f1, #06b6d4);
+
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+            --glass-shine: 1px solid rgba(255, 255, 255, 0.2);
+
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+
+            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* --- Reset & Core --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: #f8fafc;
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Advanced Background Animation (Pure CSS) --- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: floatOrb 20s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            width: 400px;
+            height: 400px;
+            background: var(--primary);
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: var(--cyan);
+            bottom: -10%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--purple);
+            top: 40%;
+            left: 40%;
+            animation-delay: -10s;
+            opacity: 0.2;
+        }
+
+        @keyframes floatOrb {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(30px, 50px) scale(1.1);
+            }
+        }
+
+        /* Grid Texture Overlay */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* --- Typography & Utilities --- */
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-head);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: 0.3s;
+        }
+
+        .gradient-text {
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: gradientMove 5s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        /* --- Glass Navigation --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: var(--glass-shine);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            animation: slideDown 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .logo {
+            font-family: var(--font-head);
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-items {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-items a {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            font-weight: 500;
+            position: relative;
+        }
+
+        .nav-items a:hover {
+            color: white;
+        }
+
+        .nav-items a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--cyan);
+            transition: 0.3s var(--ease-elastic);
+        }
+
+        .nav-items a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: var(--gradient-main);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+            transition: 0.4s var(--ease-elastic);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.6);
+        }
+
+        /* --- Hero Section --- */
+        header {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            background: rgba(99, 102, 241, 0.1);
+            color: #c7d2fe;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            animation: fadeIn 1s 0.2s backwards;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 7vw, 6rem);
+            line-height: 1;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 1s 0.4s backwards;
+        }
+
+        .hero-desc {
+            max-width: 650px;
+            font-size: 1.25rem;
+            color: #94a3b8;
+            margin-bottom: 3rem;
+            animation: fadeIn 1s 0.6s backwards;
+        }
+
+        /* --- Complex Bento Grid --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, minmax(280px, auto));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        /* Card Styling */
+        .card {
+            background: var(--bg-panel);
+            border: var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s var(--ease-elastic);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            border-color: rgba(6, 182, 212, 0.5);
+            transform: translateY(-5px) scale(1.01);
+            background: var(--bg-panel-hover);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Pure CSS Glow Effect on Hover */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+            transition: 0.7s;
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            width: fit-content;
+        }
+
+        /* Grid Spans */
+        .span-2 {
+            grid-column: span 2;
+        }
+
+        .span-row-2 {
+            grid-row: span 2;
+        }
+
+        /* Feature specific styling */
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* --- Visual Divider --- */
+        .divider-pulse {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            margin: 6rem 0;
+            opacity: 0.5;
+            position: relative;
+        }
+
+        .divider-pulse::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 4px;
+            background: var(--cyan);
+            border-radius: 10px;
+            box-shadow: 0 0 20px var(--cyan);
+        }
+
+        /* --- Team Hexagon Style (CSS Trick) --- */
+        .team-section {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .team-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 4rem;
+            margin-top: 3rem;
+        }
+
+        .team-card {
+            position: relative;
+            width: 250px;
+            text-align: center;
+            group: 1;
+        }
+
+        .hex-border {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            /* Using circle for cleaner look, hex requires clipping */
+            background: linear-gradient(var(--bg-void), var(--bg-void)) padding-box,
+                var(--gradient-main) border-box;
+            border: 3px solid transparent;
+            transition: 0.5s;
+        }
+
+        .team-card:hover .hex-border {
+            transform: rotate(180deg);
+        }
+
+        .team-card:hover img {
+            transform: rotate(-180deg);
+        }
+
+        /* Counter rotate image */
+
+        .hex-border img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: 0.5s;
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: #020617;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /* --- Keyframe Animations --- */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 900px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+
+            .span-2,
+            .span-row-2 {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            nav {
+                width: 95%;
+                padding: 0.8rem 1.2rem;
+            }
+
+            .nav-items {
+                display: none;
+            }
+
+            /* Hide links on mobile for cleaner look */
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="ambient-mesh">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <div class="grid-overlay"></div>
+
+    <nav>
+        <a href="#" class="logo">
+            <i class="fas fa-fingerprint" style="color: var(--cyan);"></i> SwaraBharat
+        </a>
+        <div class="nav-items">
+            <a href="vision.html">Vision</a>
+            <a href="technolgy.html">Technology</a>
+            <a href="impact.html">Impact</a>
+        </div>
+        <a href="join.html" class="cta-btn">Join Grid</a>
+    </nav>
+
+    <header>
+        <div class="hero-badge">System Status: Online</div>
+        <h1 class="hero-title">The <span class="gradient-text">Neural Network</span><br>of Society</h1>
+        <p class="hero-desc">We convert the chaotic noise of 1.4 Billion voices into a structured, real-time data stream
+            for empathetic governance. No scripts. Pure Data.</p>
+
+        <div style="display: flex; gap: 1rem; margin-top: 1rem; animation: fadeIn 1s 0.8s backwards;">
+            <a href="technolgy.html" class="cta-btn" style="padding: 1rem 2.5rem; font-size: 1rem;">Initialize</a>
+            <a href="vision.html" class="cta-btn"
+                style="background: transparent; border: 1px solid rgba(255,255,255,0.2); box-shadow: none;">Read
+                Manifesto</a>
+        </div>
+    </header>
+
+    <div class="container" id="tech">
+        <div class="bento-grid">
+
+            <div class="card span-2">
+                <i class="fas fa-globe-asia card-icon"></i>
+                <div>
+                    <h3>Hyper-Local Sensing</h3>
+                    <p>Traditional surveys take months. SwaraBharat listens in real-time. From rural dialects to urban
+                        slang, our NLP engine decodes sentiment instantly without compromising identity.</p>
+                </div>
+                <div
+                    style="height: 4px; width: 50%; background: var(--gradient-main); margin-top: 2rem; border-radius: 2px;">
+                </div>
+            </div>
+
+            <div class="card span-row-2"
+                style="background: linear-gradient(180deg, rgba(30,41,59,0.4) 0%, rgba(99,102,241,0.1) 100%);">
+                <i class="fas fa-shield-virus card-icon"></i>
+                <div>
+                    <h3>Zero-Trust Privacy</h3>
+                    <p>We do not collect PII (Personally Identifiable Information). Data is anonymized at the edge.</p>
+                    <br>
+                    <p
+                        style="font-size: 0.85rem; color: #64748b; border-left: 2px solid var(--purple); padding-left: 10px;">
+                        "The most secure data is the data you never collect."
+                    </p>
+                </div>
+                <i class="fas fa-lock"
+                    style="font-size: 8rem; position: absolute; bottom: -20px; right: -20px; opacity: 0.05; transform: rotate(-15deg);"></i>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-chart-network card-icon"></i>
+                <h3>Visual Heatmaps</h3>
+                <p>Turning vocal complaints into actionable geospatial data clusters.</p>
+            </div>
+
+            <div class="card">
+                <i class="fas fa-bolt card-icon"></i>
+                <h3>Rapid Response</h3>
+                <p>Closing the feedback loop between citizen and state in minutes.</p>
+            </div>
+
+            <div class="card span-2">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <i class="fas fa-users-viewfinder card-icon"></i>
+                    <span
+                        style="font-family:'Space Grotesk'; font-size:2rem; font-weight:700; color:var(--cyan);">1.2M+</span>
+                </div>
+                <h3>Voices Analyzed</h3>
+                <p>Processing thousands of audio inputs per second across 22 regional languages.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="divider-pulse"></div>
+
+    <section class="team-section" id="impact">
+        <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">The Architects</h2>
+        <p style="color: #94a3b8;">Engineers of the social fabric.</p>
+
+        <div class="team-container">
+            <div class="team-card">
+                <div class="hex-border">
+                    <img src="https://ui-avatars.com/api/?name=Divyanshu&background=020617&color=6366f1&size=200"
+                        alt="Divyanshu">
+                </div>
+                <h3>Divyanshu</h3>
+                <p style="color: var(--primary); font-size: 0.9rem; font-weight: 600;">System Architect</p>
+            </div>
+
+
+            <div class="team-card">
+                <div class="hex-border">
+                    <img src="https://ui-avatars.com/api/?name=D&background=020617&color=a855f7&size=200" alt="Dev">
+                </div>
+                <h3>Divu</h3>
+                <p style="color: var(--purple); font-size: 0.9rem; font-weight: 600;">decoder</p>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div style="margin-bottom: 2rem;">
+            <i class="fas fa-fingerprint" style="font-size: 3rem; color: var(--bg-panel-hover);"></i>
+        </div>
+        <h2 style="margin-bottom: 1rem;">Join the Grid</h2>
+        <a href="mailto:contact@ddgtechgroups.in"
+            style="font-size: 1.2rem; color: var(--cyan); border-bottom: 1px dashed var(--cyan);">
+            contact@ddgtechgroups.in
+        </a>
+        <p style="margin-top: 3rem; font-size: 0.8rem; color: #475569;">
+            &copy; 2025 SwaraBharat. Powered by DDG Technical Groups.<br>
+            NO JavaScript was used in the making of this site.
+        </p>
+    </footer>
+
+</body>
+
+</html>

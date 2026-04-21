@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwaraBharat | Real World Impact</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* --- Impact Palette --- */
+            --bg-void: #020617;
+            --bg-panel: rgba(30, 41, 59, 0.4);
+
+            --success: #10b981;
+            /* Green for "Resolved" */
+            --alert: #ef4444;
+            /* Red for "Crisis" */
+            --primary: #6366f1;
+            --cyan: #06b6d4;
+
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: #f8fafc;
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Ambient Background --- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #0f172a 0%, #020617 100%);
+        }
+
+        /* Green Glow for "Positive Impact" vibe */
+        .glow-spot {
+            position: fixed;
+            top: 20%;
+            right: 10%;
+            width: 400px;
+            height: 400px;
+            background: var(--success);
+            filter: blur(150px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: pulseGlow 8s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            from {
+                opacity: 0.1;
+                transform: scale(1);
+            }
+
+            to {
+                opacity: 0.2;
+                transform: scale(1.2);
+            }
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* --- Nav --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-items a {
+            margin-left: 2rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .nav-items a:hover {
+            color: white;
+        }
+
+        /* --- Header --- */
+        header {
+            text-align: center;
+            padding: 6rem 1rem 4rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .stat-highlight {
+            color: var(--success);
+            font-weight: 700;
+        }
+
+        /* --- Big Stats Row --- */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            flex-wrap: wrap;
+            margin-bottom: 6rem;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-family: var(--font-head);
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: #64748b;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        /* --- Case Study Cards --- */
+        .impact-grid {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .story-card {
+            background: var(--bg-panel);
+            border: var(--glass-border);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            transition: 0.4s;
+            padding: 2rem;
+        }
+
+        .story-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--success);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .tag.resolved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            border: 1px solid var(--success);
+        }
+
+        .tag.prevented {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .story-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-family: var(--font-head);
+        }
+
+        .story-card p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .data-viz {
+            height: 6px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        .data-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0;
+            animation: fillBar 1.5s ease-out forwards;
+        }
+
+        /* --- Heatmap Visual (CSS Only) --- */
+        .heatmap-section {
+            margin: 8rem auto;
+            max-width: 1000px;
+            padding: 0 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .heatmap-graphic {
+            flex: 1;
+            min-width: 300px;
+            height: 350px;
+            background: #0f172a;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: var(--glass-border);
+        }
+
+        /* CSS dots representing map data */
+        .map-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--alert);
+            box-shadow: 0 0 10px var(--alert);
+            animation: pulseDot 2s infinite;
+        }
+
+        .map-dot.resolved {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+            animation: none;
+        }
+
+        @keyframes pulseDot {
+            0% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+
+            100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fillBar {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: var(--w);
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            color: #64748b;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .stats-row {
+                gap: 2rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/glassmorphism.css">
+</head>
+
+<body>
+
+    <div class="ambient-mesh"></div>
+    <div class="glow-spot"></div>
+    <div class="grid-overlay"></div>
+
+    <nav>
+        <a href="index.html" style="text-decoration:none; color:white; font-weight:700; font-family:var(--font-head);">
+            <i class="fas fa-arrow-left"></i> Home
+        </a>
+        <div class="nav-items">
+            <a href="vision.html">Vision</a>
+            <a href="technolgy.html">Technology</a>
+            <a href="impact.html" style="color:white;">Impact</a>
+        </div>
+    </nav>
+
+    <header>
+        <span style="color: var(--success); font-family: var(--font-head); letter-spacing: 2px;">LIVE_METRICS</span>
+        <h1>Measuring the <br>Pulse of Change</h1>
+        <p style="color: #94a3b8; font-size: 1.2rem; margin-top: 1rem;">
+            When citizens speak, governance transforms. Here is the tangible impact of the SwaraBharat grid deployed in
+            pilot districts.
+        </p>
+    </header>
+
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-num">48h</div>
+            <div class="stat-label">Avg. Resolution Time</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">12k+</div>
+            <div class="stat-label">Issues Resolved</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">89%</div>
+            <div class="stat-label">Citizen Trust Score</div>
+        </div>
+    </div>
+
+    <div class="impact-grid">
+
+        <div class="story-card">
+            <div class="tag resolved">RESOLVED</div>
+            <i class="fas fa-faucet-drip" style="font-size: 2rem; color: #64748b; margin-bottom: 1rem;"></i>
+            <h3>The Water Crisis</h3>
+            <p>150 distinct voice reports from Village 'A' identified a broken main pipe days before official
+                inspection.</p>
+            <div
+                style="display:flex; justify-content:space-between; font-size:0.8rem; color:#fff; margin-bottom:0.5rem;">
+                <span>Response Speed</span>
+                <span>Top 1%</span>
+            </div>
+            <div class="data-viz">
+                <div class="data-bar" style="--w: 95%;"></div>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <div class="tag prevented">PREVENTED</div>
+            <i class="fas fa-virus" style="font-size: 2rem; color: #64748b; margin-bottom: 1rem;"></i>
+            <h3>Dengue Outbreak</h3>
+            <p>Keyword spikes for "Fever" and "Mosquitoes" in District 'B' triggered an automated sanitation drive.</p>
+            <div
+                style="display:flex; justify-content:space-between; font-size:0.8rem; color:#fff; margin-bottom:0.5rem;">
+                <span>AI Accuracy</span>
+                <span>92%</span>
+            </div>
+            <div class="data-viz" style="background: rgba(99,102,241,0.2);">
+                <div class="data-bar" style="--w: 92%; background: var(--primary);"></div>
+            </div>
+        </div>
+
+        <div class="story-card">
+            <div class="tag resolved">INFRASTRUCTURE</div>
+            <i class="fas fa-road" style="font-size: 2rem; color: #64748b; margin-bottom: 1rem;"></i>
+            <h3>Urban Mobility</h3>
+            <p>Aggregated complaints about pothole clusters in Sector 4 led to immediate resurfacing.</p>
+            <div
+                style="display:flex; justify-content:space-between; font-size:0.8rem; color:#fff; margin-bottom:0.5rem;">
+                <span>Public Satisfaction</span>
+                <span>4.8/5</span>
+            </div>
+            <div class="data-viz">
+                <div class="data-bar" style="--w: 88%;"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="heatmap-section">
+        <div class="heatmap-text" style="flex:1;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Seeing the Invisible</h2>
+            <p style="color: #94a3b8; margin-bottom: 2rem;">
+                Our dashboards convert audio complaints into geospatial heatmaps. Red dots indicate emerging crises.
+                Green dots indicate resolved issues.
+            </p>
+            <a href="join.html"
+                style="color: var(--success); font-weight: 700; text-decoration: none; border-bottom: 1px solid var(--success);">
+                View Live Dashboard Demo <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+
+        <div class="heatmap-graphic">
+            <div
+                style="position:absolute; width:100%; height:100%; opacity:0.1; background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 20px 20px;">
+            </div>
+
+            <div class="map-dot resolved" style="top: 20%; left: 30%;"></div>
+            <div class="map-dot resolved" style="top: 25%; left: 35%;"></div>
+            <div class="map-dot resolved" style="top: 22%; left: 28%;"></div>
+            <div class="map-dot resolved" style="top: 60%; left: 70%;"></div>
+            <div class="map-dot resolved" style="top: 65%; left: 75%;"></div>
+
+            <div class="map-dot" style="top: 40%; left: 50%;"></div>
+            <div class="map-dot" style="top: 42%; left: 52%; animation-delay: 0.2s;"></div>
+            <div class="map-dot" style="top: 38%; left: 51%; animation-delay: 0.5s;"></div>
+
+            <div
+                style="position: absolute; width: 100%; height: 2px; background: rgba(16, 185, 129, 0.5); top: 0; box-shadow: 0 0 15px var(--success); animation: scanMap 3s linear infinite;">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes scanMap {
+            0% {
+                top: 0;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <footer>
+        <p>&copy; 2025 SwaraBharat // Data for Good</p>
+    </footer>
+
+</body>
+
+</html>

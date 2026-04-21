@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwaraBharat | The Vision</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&family=Cinzel:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            /* --- Same Master Palette for Consistency --- */
+            --bg-void: #020617;
+            --bg-panel: rgba(30, 41, 59, 0.4);
+            --primary: #6366f1;
+            --cyan: #06b6d4;
+            --purple: #a855f7;
+            --gold: #fbbf24;
+            /* New Accent for "Vision" */
+
+            --gradient-main: linear-gradient(135deg, #6366f1 0%, #06b6d4 100%);
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-serif: 'Cinzel', serif;
+            /* For the Manifesto look */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: #f8fafc;
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            line-height: 1.8;
+        }
+
+        /* --- Ambient Background --- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* --- Nav --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-items a {
+            margin-left: 2rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .nav-items a:hover {
+            color: white;
+        }
+
+        /* --- Typography --- */
+        h1 {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            font-family: var(--font-head);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .manifesto-text {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: #e2e8f0;
+            text-align: center;
+            max-width: 800px;
+            margin: 6rem auto;
+            border-left: 1px solid var(--gold);
+            border-right: 1px solid var(--gold);
+            padding: 2rem;
+            background: linear-gradient(90deg, rgba(0, 0, 0, 0), rgba(251, 191, 36, 0.05), rgba(0, 0, 0, 0));
+        }
+
+        /* --- Comparative Grid Layout --- */
+        .vision-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1px 1fr;
+            gap: 2rem;
+            align-items: center;
+            margin: 4rem 0;
+        }
+
+        .center-line {
+            width: 1px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+            position: relative;
+        }
+
+        .center-line::after {
+            content: 'VS';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bg-void);
+            padding: 0.5rem;
+            color: var(--primary);
+            font-family: var(--font-head);
+            font-weight: 700;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            font-size: 0.8rem;
+        }
+
+        .side-card {
+            padding: 2rem;
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+
+        .old-way {
+            text-align: right;
+            opacity: 0.6;
+        }
+
+        .new-way {
+            background: var(--bg-panel);
+            border: var(--glass-border);
+            border-left: 3px solid var(--cyan);
+            box-shadow: 0 0 30px rgba(6, 182, 212, 0.1);
+        }
+
+        /* --- Roadmap Section --- */
+        .roadmap {
+            margin-top: 8rem;
+        }
+
+        .roadmap-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 2rem;
+        }
+
+        .year {
+            font-family: var(--font-head);
+            font-size: 3rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.1);
+            width: 150px;
+            flex-shrink: 0;
+        }
+
+        .roadmap-item:hover .year {
+            color: var(--primary);
+            transition: 0.5s;
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            color: #64748b;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .comparison-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .center-line {
+                display: none;
+            }
+
+            .old-way {
+                text-align: left;
+                opacity: 1;
+                border-left: 3px solid #ef4444;
+                padding-left: 1rem;
+            }
+
+            .roadmap-item {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="css/glassmorphism.css">
+</head>
+
+<body>
+
+    <div class="ambient-mesh"></div>
+    <div class="grid-overlay"></div>
+
+    <nav>
+        <a href="index.html" style="text-decoration:none; color:white; font-weight:700; font-family:var(--font-head);">
+            <i class="fas fa-arrow-left"></i> Home
+        </a>
+        <div class="nav-items">
+            <a href="vision.html" style="color:white;">Vision</a>
+            <a href="technolgy.html">Technology</a>
+            <a href="join.html">Join Grid</a>
+        </div>
+    </nav>
+
+    <div class="vision-container">
+        <span style="color: var(--gold); font-family: var(--font-mono); letter-spacing: 2px;">>> THE_MANIFESTO</span>
+        <h1>From Feedback<br>to <span style="color: var(--primary);">Feeling.</span></h1>
+
+        <div class="manifesto-text">
+            "A government that cannot feel the pain of its citizens in real-time is a government operating in the dark.
+            We are building the central nervous system for Indian democracy."
+        </div>
+
+        <div class="comparison-grid">
+            <div class="side-card old-way">
+                <h3 style="color: #94a3b8; margin-bottom: 0.5rem;">The Old Paradigm</h3>
+                <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Reactive Bureaucracy</h4>
+                <p>Citizens fill out forms. Surveys happen once every 5 years. Issues are discovered only after they
+                    become crises. Data is siloed, slow, and often ignored.</p>
+            </div>
+
+            <div class="center-line"></div>
+
+            <div class="side-card new-way">
+                <h3 style="color: var(--cyan); margin-bottom: 0.5rem;">The SwaraBharat Paradigm</h3>
+                <h4 style="font-size: 1.5rem; margin-bottom: 1rem;">Predictive Governance</h4>
+                <p>The grid senses shifts in societal mood instantly. AI predicts infrastructure failures and health
+                    outbreaks before they peak. Response is proactive and empathetic.</p>
+            </div>
+        </div>
+
+        <div class="roadmap">
+            <h2 style="text-align: center; margin-bottom: 4rem;">The Trajectory</h2>
+
+            <div class="roadmap-item">
+                <div class="year">2024</div>
+                <div>
+                    <h3 style="color: white; margin-bottom: 0.5rem;">The Initial Mesh</h3>
+                    <p style="color: #94a3b8;">Deployment of voice-first kiosks in 500 tier-3 villages. Alpha testing of
+                        the Indic Language NLP model for Hindi, Tamil, and Bengali.</p>
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="year">2025</div>
+                <div>
+                    <h3 style="color: var(--cyan); margin-bottom: 0.5rem;">The Sensor Grid</h3>
+                    <p style="color: #cbd5e1;">Integration with 50+ Municipal Corporations. Launch of the
+                        "Zero-Knowledge" privacy protocol. 10 Million voices processed daily.</p>
+                </div>
+            </div>
+
+            <div class="roadmap-item">
+                <div class="year">2030</div>
+                <div>
+                    <h3 style="color: var(--purple); margin-bottom: 0.5rem;">Predictive Society</h3>
+                    <p style="color: #cbd5e1;">SwaraBharat becomes the standard OS for Indian Governance. Policy
+                        decisions are modeled on real-time emotional and factual data from the grid.</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 6rem;">
+            <p style="font-size: 1.2rem; color: white;">The future isn't just smart. It's sensitive.</p>
+            <a href="index.html#join"
+                style="display: inline-block; margin-top: 2rem; padding: 1rem 3rem; background: var(--glass-border); border: 1px solid var(--gold); color: var(--gold); border-radius: 50px; font-weight: 700; transition: 0.3s;">
+                Be Part of History
+            </a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2025 SwaraBharat // Architecting Empathy</p>
+    </footer>
+
+</body>
+
+</html>

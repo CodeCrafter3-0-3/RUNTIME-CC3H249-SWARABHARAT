@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwaraBharat | System Architecture</title>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-void: #020617;
+            --bg-panel: rgba(30, 41, 59, 0.4);
+            --primary: #6366f1;
+            --cyan: #06b6d4;
+            --green: #10b981;
+            --font-head: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- Reuse Background --- */
+        .ambient-mesh {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+            -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+        }
+
+        /* --- Nav --- */
+        nav {
+            position: sticky;
+            top: 20px;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border: var(--glass-border);
+            border-radius: 50px;
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-items a {
+            margin-left: 2rem;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .nav-items a:hover,
+        .nav-items a.active {
+            color: var(--cyan);
+        }
+
+        /* --- Content --- */
+        .container {
+            max-width: 1000px;
+            margin: 6rem auto;
+            padding: 0 2rem;
+        }
+
+        h1 {
+            font-family: var(--font-head);
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            color: var(--cyan);
+            font-family: var(--font-mono);
+            margin-bottom: 4rem;
+            display: block;
+        }
+
+        /* --- Process Timeline (Pure CSS) --- */
+        .pipeline {
+            position: relative;
+            border-left: 2px solid rgba(99, 102, 241, 0.3);
+            padding-left: 3rem;
+            margin-left: 1rem;
+        }
+
+        .step {
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            left: -3.6rem;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--bg-void);
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .step-card {
+            background: var(--bg-panel);
+            border: var(--glass-border);
+            padding: 2rem;
+            border-radius: 16px;
+            transition: 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateX(10px);
+            border-color: var(--cyan);
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-num {
+            font-family: var(--font-mono);
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .step h3 {
+            font-family: var(--font-head);
+            font-size: 1.5rem;
+        }
+
+        /* --- Terminal Block --- */
+        .terminal {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin-top: 1.5rem;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .code-line {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment {
+            color: #64748b;
+        }
+
+        .keyword {
+            color: #c084fc;
+        }
+
+        .string {
+            color: var(--green);
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 4rem 0;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+    </style>
+    <link rel="stylesheet" href="css/glassmorphism.css">
+</head>
+
+<body>
+
+    <div class="ambient-mesh"></div>
+    <div class="grid-overlay"></div>
+
+    <nav>
+        <a href="index.html" style="text-decoration:none; color:white; font-weight:700; font-family:var(--font-head);">
+            <i class="fas fa-arrow-left"></i> Back to Grid
+        </a>
+        <div class="nav-items">
+            <a href="index.html">Home</a>
+            <a href="#" class="active">Technology</a>
+            <a href="join.html">Join Us</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <span class="subtitle">>> SYSTEM_ARCHITECTURE_V.2.0</span>
+        <h1>The Invisible Pipeline</h1>
+        <p style="color: #94a3b8; max-width: 600px; font-size: 1.1rem; margin-bottom: 4rem;">
+            How SwaraBharat processes unstructured voice data into structured governance intelligence without
+            compromising user privacy.
+        </p>
+
+        <div class="pipeline">
+            <div class="step">
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">01_INPUT</span>
+                        <h3>Multi-Modal Ingestion</h3>
+                    </div>
+                    <p style="color:#cbd5e1;">Inputs are received via IVR calls, WhatsApp voice notes, and Kiosks. The
+                        system detects the language (Indic Language Stack) instantly.</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">02_PROCESSING</span>
+                        <h3>Edge Anonymization</h3>
+                    </div>
+                    <p style="color:#cbd5e1;">Before data leaves the local device or tower, PII (Names, Phone Numbers)
+                        is scrubbed using Named Entity Recognition (NER).</p>
+
+                    <div class="terminal">
+                        <span class="code-line"><span class="comment"># Privacy Protocol</span></span>
+                        <span class="code-line"><span class="keyword">def</span> scrub_data(audio_stream):</span>
+                        <span class="code-line">&nbsp;&nbsp;entity = extract_entities(audio_stream)</span>
+                        <span class="code-line">&nbsp;&nbsp;<span class="keyword">if</span> entity.type == <span
+                                class="string">"PII"</span>:</span>
+                        <span class="code-line">&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span
+                                class="string">"[REDACTED]"</span></span>
+                        <span class="code-line">&nbsp;&nbsp;<span class="keyword">return</span> audio_stream</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-num">03_OUTPUT</span>
+                        <h3>Geospatial Clustering</h3>
+                    </div>
+                    <p style="color:#cbd5e1;">Issues are categorized (e.g., "Water Shortage", "Road Damage") and plotted
+                        on a heatmap for officials.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>encrypted connection // secure node</p>
+    </footer>
+
+</body>
+
+</html>

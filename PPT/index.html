@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwaraBharat 8-Slide Presentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-0: #061323;
+      --bg-1: #0d2543;
+      --bg-2: #133458;
+      --panel: rgba(6, 19, 35, 0.72);
+      --line: rgba(125, 211, 252, 0.22);
+      --text: #e2edf9;
+      --muted: #a2bad5;
+      --accent: #38bdf8;
+      --accent-2: #f59e0b;
+      --ok: #22c55e;
+      --danger: #ef4444;
+      --radius: 18px;
+      --shadow: 0 28px 80px rgba(2, 8, 23, 0.48);
+      --shadow-deep: 0 40px 100px rgba(2, 8, 23, 0.62);
+      --cyan-glow: rgba(56, 189, 248, 0.32);
+      --amber-glow: rgba(245, 158, 11, 0.24);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+    }
+
+    body {
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(56, 189, 248, 0.20), transparent 36%),
+        radial-gradient(circle at 80% 18%, rgba(245, 158, 11, 0.16), transparent 34%),
+        radial-gradient(circle at 65% 90%, rgba(34, 197, 94, 0.14), transparent 30%),
+        linear-gradient(140deg, var(--bg-0), var(--bg-1) 45%, var(--bg-2));
+      overflow: hidden;
+      perspective: 1600px;
+      transform-style: preserve-3d;
+    }
+
+    .stage-3d {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    .orbital-ring {
+      position: absolute;
+      --rx: 68deg;
+      --ry: -20deg;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      box-shadow: inset 0 0 30px rgba(125, 211, 252, 0.08), 0 0 25px rgba(56, 189, 248, 0.15);
+      transform-style: preserve-3d;
+      animation: spinRing 24s linear infinite;
+    }
+
+    .ring-a {
+      width: 420px;
+      height: 420px;
+      left: -90px;
+      top: -120px;
+      --rx: 68deg;
+      --ry: -20deg;
+      transform: rotateX(var(--rx)) rotateY(var(--ry));
+      opacity: 0.48;
+    }
+
+    .ring-b {
+      width: 340px;
+      height: 340px;
+      right: -70px;
+      top: 20%;
+      --rx: 72deg;
+      --ry: 24deg;
+      transform: rotateX(var(--rx)) rotateY(var(--ry));
+      opacity: 0.36;
+      animation-duration: 18s;
+      animation-direction: reverse;
+    }
+
+    .prism {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 16px 30px rgba(2, 8, 23, 0.52));
+      animation: prismFloat 8s ease-in-out infinite;
+    }
+
+    .prism::before,
+    .prism::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 18px;
+      border: 1px solid rgba(191, 219, 254, 0.42);
+      background: linear-gradient(145deg, rgba(56, 189, 248, 0.24), rgba(15, 23, 42, 0.45));
+      transform-style: preserve-3d;
+    }
+
+    .prism::before {
+      transform: rotateY(28deg) rotateX(18deg) translateZ(18px);
+    }
+
+    .prism::after {
+      transform: rotateY(-24deg) rotateX(-18deg) translateZ(-14px);
+      background: linear-gradient(145deg, rgba(245, 158, 11, 0.26), rgba(15, 23, 42, 0.42));
+    }
+
+    .prism-a {
+      left: 8%;
+      bottom: 10%;
+      transform: rotateY(16deg) rotateX(16deg);
+      animation-delay: -1.8s;
+    }
+
+    .prism-b {
+      right: 12%;
+      bottom: 20%;
+      width: 92px;
+      height: 92px;
+      transform: rotateY(-22deg) rotateX(18deg);
+      animation-delay: -3.2s;
+    }
+
+    .stage-glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(24px);
+    }
+
+    .glow-a {
+      width: 300px;
+      height: 300px;
+      right: -40px;
+      bottom: -40px;
+      background: var(--cyan-glow);
+      animation: glowPulse 7s ease-in-out infinite;
+    }
+
+    .glow-b {
+      width: 240px;
+      height: 240px;
+      left: 20%;
+      top: -60px;
+      background: var(--amber-glow);
+      animation: glowPulse 6s ease-in-out infinite reverse;
+    }
+
+    .floor-grid {
+      position: absolute;
+      left: -5%;
+      right: -5%;
+      bottom: -18%;
+      height: 42%;
+      background:
+        linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+        linear-gradient(to top, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      background-size: 34px 34px;
+      transform: rotateX(74deg) translateZ(-180px);
+      opacity: 0.35;
+      filter: blur(0.2px);
+    }
+
+    .deck-wrap {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      padding: 18px;
+      position: relative;
+      z-index: 2;
+      transform-style: preserve-3d;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+      transform: translateZ(34px);
+    }
+
+    .brand {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 0.2px;
+      font-weight: 700;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .kbd {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 3px 7px;
+      background: rgba(15, 23, 42, 0.65);
+      color: #dbeafe;
+      font-size: 0.78rem;
+    }
+
+    .deck {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow-deep);
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: rotateX(3deg) rotateY(-3deg) translateZ(22px);
+    }
+
+    .deck::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      background: linear-gradient(110deg, rgba(255, 255, 255, 0.10) 0%, transparent 24%, transparent 75%, rgba(255, 255, 255, 0.06) 100%);
+      mix-blend-mode: screen;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: clamp(20px, 3vw, 40px);
+      overflow: auto;
+      transform: translateZ(26px);
+      transform-style: preserve-3d;
+    }
+
+    .slide.active {
+      display: block;
+      animation: fadeSlide3d 360ms ease;
+    }
+
+    @keyframes fadeSlide3d {
+      from {
+        opacity: 0;
+        transform: translateY(12px) translateZ(-40px) rotateX(5deg);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) translateZ(26px) rotateX(0deg);
+      }
+    }
+
+    @keyframes prismFloat {
+      0%,
+      100% {
+        transform: translateY(0) rotateY(16deg) rotateX(16deg);
+      }
+      50% {
+        transform: translateY(-14px) rotateY(24deg) rotateX(18deg);
+      }
+    }
+
+    @keyframes spinRing {
+      from {
+        transform: rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(0deg);
+      }
+      to {
+        transform: rotateX(var(--rx)) rotateY(var(--ry)) rotateZ(360deg);
+      }
+    }
+
+    @keyframes glowPulse {
+      0%,
+      100% {
+        opacity: 0.35;
+      }
+      50% {
+        opacity: 0.62;
+      }
+    }
+
+    .slide h1,
+    .slide h2 {
+      font-family: "Space Grotesk", sans-serif;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .slide h1 {
+      font-size: clamp(2rem, 4vw, 3.7rem);
+      letter-spacing: -0.5px;
+      text-shadow: 0 7px 24px rgba(2, 132, 199, 0.28);
+    }
+
+    .slide h2 {
+      font-size: clamp(1.5rem, 3vw, 2.6rem);
+    }
+
+    .slide p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 14px;
+      max-width: 900px;
+    }
+
+    .grid-3,
+    .grid-2 {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(2, 8, 23, 0.60);
+      padding: 14px;
+      transform-style: preserve-3d;
+      transform: translateZ(16px);
+      box-shadow: 0 14px 30px rgba(2, 8, 23, 0.34);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(125, 211, 252, 0.15);
+      transform: translateZ(-16px);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateZ(22px) rotateX(2deg) rotateY(-2deg);
+      box-shadow: 0 18px 32px rgba(2, 8, 23, 0.4);
+    }
+
+    .card h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: #dbeafe;
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    .card p,
+    .card li {
+      margin: 0;
+      color: #bed2ea;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+
+    .list {
+      margin-top: 8px;
+      padding-left: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .hero-line {
+      color: var(--accent);
+      font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+      font-family: "Space Grotesk", sans-serif;
+      margin-bottom: 14px;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .node {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(15, 23, 42, 0.8);
+      color: #d7ebff;
+      font-size: 0.9rem;
+      transform: translateZ(24px);
+      box-shadow: 0 8px 16px rgba(2, 8, 23, 0.24);
+    }
+
+    .metric {
+      text-align: center;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: rgba(2, 8, 23, 0.55);
+      transform-style: preserve-3d;
+      transform: translateZ(16px);
+      box-shadow: 0 12px 26px rgba(2, 8, 23, 0.3);
+    }
+
+    .metric .num {
+      font-family: "Space Grotesk", sans-serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      margin-bottom: 4px;
+      color: #f0f9ff;
+    }
+
+    .metric .lbl {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 10px;
+      border: 1px solid transparent;
+    }
+
+    .tag.ok {
+      background: rgba(34, 197, 94, 0.18);
+      border-color: rgba(34, 197, 94, 0.35);
+      color: #bbf7d0;
+    }
+
+    .tag.warn {
+      background: rgba(245, 158, 11, 0.16);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fde68a;
+    }
+
+    .tag.bad {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #fecaca;
+    }
+
+    .footer {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--panel);
+      backdrop-filter: blur(8px);
+      padding: 10px 12px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      transform: translateZ(30px);
+    }
+
+    .slide.active .card,
+    .slide.active .metric,
+    .slide.active .node {
+      animation: depthIn 340ms ease both;
+    }
+
+    .slide.active .card:nth-child(2),
+    .slide.active .metric:nth-child(2),
+    .slide.active .node:nth-child(2) {
+      animation-delay: 60ms;
+    }
+
+    .slide.active .card:nth-child(3),
+    .slide.active .metric:nth-child(3),
+    .slide.active .node:nth-child(3) {
+      animation-delay: 120ms;
+    }
+
+    @keyframes depthIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) translateZ(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) translateZ(16px);
+      }
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      color: #dbeafe;
+      background: rgba(15, 23, 42, 0.7);
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-weight: 600;
+      font-family: "IBM Plex Sans", sans-serif;
+    }
+
+    .btn:hover {
+      background: rgba(30, 41, 59, 0.9);
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 200px;
+      max-width: 520px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.2);
+      overflow: hidden;
+    }
+
+    .progress {
+      width: 12.5%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 220ms ease;
+    }
+
+    .dots {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid rgba(191, 219, 254, 0.45);
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.20);
+    }
+
+    .counter {
+      color: #dbeafe;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 980px) {
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .meta {
+        display: none;
+      }
+
+      .deck {
+        transform: rotateX(2deg) rotateY(-1deg) translateZ(14px);
+      }
+
+      .prism-b {
+        display: none;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .deck-wrap {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .slide {
+        padding: 16px;
+      }
+
+      .btn {
+        padding: 8px 10px;
+      }
+
+      .progress-wrap {
+        min-width: 150px;
+      }
+
+      .deck {
+        transform: none;
+      }
+
+      .stage-3d {
+        opacity: 0.55;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-3d" aria-hidden="true">
+    <div class="orbital-ring ring-a"></div>
+    <div class="orbital-ring ring-b"></div>
+    <div class="prism prism-a"></div>
+    <div class="prism prism-b"></div>
+    <div class="stage-glow glow-a"></div>
+    <div class="stage-glow glow-b"></div>
+    <div class="floor-grid"></div>
+  </div>
+
+  <div class="deck-wrap">
+    <header class="topbar">
+      <div class="brand">SwaraBharat Presentation Deck</div>
+      <div class="meta">
+        <span>8 Slides</span>
+        <span class="kbd">Left/Right</span>
+        <span class="kbd">Space</span>
+      </div>
+    </header>
+
+    <main class="deck" id="deck">
+      <section class="slide active" data-title="Title">
+        <span class="tag ok">Slide 1</span>
+        <h1>SwaraBharat<br>Citizen Signal to Action</h1>
+        <div class="hero-line">An AI-enabled civic response platform for faster decisions</div>
+        <p>
+          This 8-slide deck summarizes the current platform, the upgraded multi-model AI layer,
+          and the operational workflows across admin, NGO, and medical center teams.
+        </p>
+        <div class="flow">
+          <span class="node">Voice Input</span>
+          <span class="node">AI Analysis</span>
+          <span class="node">Priority Routing</span>
+          <span class="node">Department Action</span>
+          <span class="node">Citizen Resolution</span>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Problem">
+        <span class="tag bad">Slide 2</span>
+        <h2>Problem We Solve</h2>
+        <p>
+          Critical public issues are often discovered too late. The delay between citizen complaint
+          and response creates avoidable escalation in health, water, and safety incidents.
+        </p>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Signal Fragmentation</h3>
+            <p>Reports are scattered across calls, forms, and local messaging channels.</p>
+          </article>
+          <article class="card">
+            <h3>Manual Prioritization</h3>
+            <p>Teams spend time sorting requests instead of resolving urgent cases.</p>
+          </article>
+          <article class="card">
+            <h3>Slow Escalation</h3>
+            <p>Cross-team handoff is inconsistent, especially for location-based emergencies.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Platform">
+        <span class="tag ok">Slide 3</span>
+        <h2>Platform Snapshot</h2>
+        <p>
+          SwaraBharat receives reports, classifies urgency and issue type, then routes action to
+          dashboard operators, volunteers, and medical center administrators.
+        </p>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Frontend Surface</h3>
+            <ul class="list">
+              <li>Citizen submission and multilingual reporting</li>
+              <li>Admin intelligence dashboard with map and analytics</li>
+              <li>NGO portal for volunteer task acceptance</li>
+              <li>Medical center panel for triage and dispatch</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Backend Capabilities</h3>
+            <ul class="list">
+              <li>Flask APIs with report lifecycle controls</li>
+              <li>AI analysis, semantic search, trend predictions</li>
+              <li>Priority explainability endpoint</li>
+              <li>Status updates and operational telemetry</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-title="AI Models">
+        <span class="tag warn">Slide 4</span>
+        <h2>Expanded AI Model Layer</h2>
+        <p>
+          The admin AI lab now supports multiple model options with safe fallback and direct model
+          selection from the UI.
+        </p>
+        <div class="grid-3">
+          <article class="card">
+            <h3>OpenAI Models</h3>
+            <ul class="list">
+              <li>gpt-4o-mini</li>
+              <li>gpt-4.1-mini</li>
+              <li>Custom list via environment config</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>HuggingFace Models</h3>
+            <ul class="list">
+              <li>bigscience/bloomz-1b1</li>
+              <li>google/flan-t5-base</li>
+              <li>mistral instruct option</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Reliability</h3>
+            <ul class="list">
+              <li>Model catalog endpoint</li>
+              <li>Selected-model analyze endpoint</li>
+              <li>Heuristic fallback when providers are offline</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Medical Ops">
+        <span class="tag ok">Slide 5</span>
+        <h2>Medical Center Admin Panel</h2>
+        <p>
+          A dedicated medical operations interface enables faster triage for health incidents with
+          dispatch controls and live load monitoring.
+        </p>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Core Actions</h3>
+            <ul class="list">
+              <li>Filter by urgency and case status</li>
+              <li>Dispatch ambulance teams</li>
+              <li>Mark cases stabilized and resolved</li>
+              <li>Call emergency contacts and open map directions</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Capacity Planning</h3>
+            <ul class="list">
+              <li>Track ICU beds, ward beds, ambulances, trauma teams</li>
+              <li>Auto-computed load meter from critical pressure</li>
+              <li>Local persistence of capacity numbers per operator</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Impact Metrics">
+        <span class="tag ok">Slide 6</span>
+        <h2>Impact Metrics</h2>
+        <p>
+          The platform focus is measurable operational improvement: faster acknowledgement, better
+          routing precision, and lower unresolved high-risk cases.
+        </p>
+        <div class="grid-3">
+          <div class="metric">
+            <div class="num">30-60%</div>
+            <div class="lbl">Faster first response target</div>
+          </div>
+          <div class="metric">
+            <div class="num">24x7</div>
+            <div class="lbl">Continuous dashboard visibility</div>
+          </div>
+          <div class="metric">
+            <div class="num">Multi-team</div>
+            <div class="lbl">Admin, NGO, Medical collaboration</div>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top: 14px;">
+          <article class="card">
+            <h3>Quality Indicators</h3>
+            <ul class="list">
+              <li>Issue classification consistency</li>
+              <li>Priority explanation transparency</li>
+              <li>Case transition auditability</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Adoption Indicators</h3>
+            <ul class="list">
+              <li>Daily active responders</li>
+              <li>Cases closed per unit time</li>
+              <li>Coverage of geotagged incidents</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Roadmap">
+        <span class="tag warn">Slide 7</span>
+        <h2>90-Day Rollout Roadmap</h2>
+        <div class="grid-3">
+          <article class="card">
+            <h3>Days 0-30</h3>
+            <ul class="list">
+              <li>Baseline onboarding for admin and medical users</li>
+              <li>Validate model reliability per issue category</li>
+              <li>Define escalation SOP for critical cases</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Days 31-60</h3>
+            <ul class="list">
+              <li>Tune model preference by traffic and latency</li>
+              <li>Integrate response quality KPI dashboard</li>
+              <li>Run simulation drills with NGO + hospitals</li>
+            </ul>
+          </article>
+          <article class="card">
+            <h3>Days 61-90</h3>
+            <ul class="list">
+              <li>District-level pilot expansion</li>
+              <li>Public impact reporting cadence</li>
+              <li>Finalize budget and scale plan</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Closing">
+        <span class="tag ok">Slide 8</span>
+        <h2>Closing Slide</h2>
+        <div class="hero-line">From citizen signals to coordinated action, in real time.</div>
+        <p>
+          This HTML deck is ready for demos, team reviews, and browser-based presentation mode.
+          It can be exported to PDF from print view when needed.
+        </p>
+        <div class="grid-2">
+          <article class="card">
+            <h3>Immediate Next Step</h3>
+            <p>Run a live walkthrough of admin AI model switching and medical triage flow.</p>
+          </article>
+          <article class="card">
+            <h3>Presentation Tip</h3>
+            <p>Use keyboard navigation and browser fullscreen for best viewing on projector screens.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="controls">
+        <button class="btn" id="prevBtn" type="button">Previous</button>
+        <button class="btn" id="nextBtn" type="button">Next</button>
+      </div>
+      <div class="progress-wrap" aria-label="slide progress">
+        <div class="progress" id="progressBar"></div>
+      </div>
+      <div class="dots" id="dots"></div>
+      <div class="counter" id="counter">1 / 8</div>
+    </footer>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressBar = document.getElementById('progressBar');
+    const counter = document.getElementById('counter');
+    const dotsRoot = document.getElementById('dots');
+
+    let current = 0;
+
+    function buildDots() {
+      dotsRoot.innerHTML = '';
+      slides.forEach((_, index) => {
+        const dot = document.createElement('button');
+        dot.className = 'dot';
+        dot.type = 'button';
+        dot.setAttribute('aria-label', 'Go to slide ' + (index + 1));
+        dot.addEventListener('click', () => showSlide(index));
+        dotsRoot.appendChild(dot);
+      });
+    }
+
+    function showSlide(index) {
+      current = (index + slides.length) % slides.length;
+      slides.forEach((slide, i) => {
+        slide.classList.toggle('active', i === current);
+      });
+
+      const dots = Array.from(dotsRoot.querySelectorAll('.dot'));
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === current);
+      });
+
+      const progressPct = ((current + 1) / slides.length) * 100;
+      progressBar.style.width = progressPct + '%';
+      counter.textContent = (current + 1) + ' / ' + slides.length;
+      document.title = 'Slide ' + (current + 1) + ' - SwaraBharat 8-Slide Presentation';
+    }
+
+    prevBtn.addEventListener('click', () => showSlide(current - 1));
+    nextBtn.addEventListener('click', () => showSlide(current + 1));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight' || event.key === 'PageDown' || event.key === ' ') {
+        event.preventDefault();
+        showSlide(current + 1);
+      }
+      if (event.key === 'ArrowLeft' || event.key === 'PageUp') {
+        event.preventDefault();
+        showSlide(current - 1);
+      }
+    });
+
+    let touchStartX = 0;
+    document.addEventListener('touchstart', (event) => {
+      touchStartX = event.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (event) => {
+      const touchEndX = event.changedTouches[0].screenX;
+      const delta = touchEndX - touchStartX;
+      if (Math.abs(delta) < 40) return;
+      if (delta < 0) showSlide(current + 1);
+      if (delta > 0) showSlide(current - 1);
+    }, { passive: true });
+
+    buildDots();
+    showSlide(0);
+  </script>
+</body>
+</html>
