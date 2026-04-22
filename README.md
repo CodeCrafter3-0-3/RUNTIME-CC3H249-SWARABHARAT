@@ -1,3 +1,13 @@
+#TEAM NAME : RUNTIME
+#TEAM CODE : CC3H249
+#PROJECT NAME : SWARABHARAT
+#TEAM NAME :
+1. DIVYANSHU MITTAL
+2. REHET ARORA
+3. RIDHIMA RATHI
+
+
+
 # SWARABHARAT
 
 AI-powered civic issue reporting platform with real-time citizen intake, analytics, and department-wise operational stations.
